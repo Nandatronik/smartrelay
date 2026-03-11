@@ -1,106 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8">
 <title>SmartHome IoT Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
 
-*{
-box-sizing:border-box;
-font-family:'Segoe UI',sans-serif;
-}
-
 body{
+font-family:Segoe UI;
 margin:0;
-background:linear-gradient(120deg,#1e3c72,#2a5298);
-color:#333;
-min-height:100vh;
-display:flex;
-flex-direction:column;
-align-items:center;
+background:#0f172a;
+color:white;
+text-align:center;
 }
 
 /* HEADER */
 
 .header{
-width:100%;
 padding:20px;
-text-align:center;
-color:white;
 font-size:26px;
-font-weight:600;
-letter-spacing:1px;
-}
-
-/* LOGIN */
-
-#loginForm{
-background:white;
-padding:35px;
-border-radius:12px;
-width:360px;
-box-shadow:0 8px 25px rgba(0,0,0,0.2);
-margin-top:40px;
-}
-
-#loginForm h2{
-text-align:center;
-margin-bottom:25px;
-}
-
-#loginForm input{
-width:100%;
-padding:12px;
-margin-bottom:15px;
-border-radius:8px;
-border:1px solid #ccc;
-font-size:15px;
-}
-
-#loginForm button{
-width:100%;
-padding:12px;
-background:#2a5298;
-border:none;
-border-radius:8px;
-color:white;
-font-size:16px;
-cursor:pointer;
-transition:0.3s;
-}
-
-#loginForm button:hover{
-background:#1e3c72;
-}
-
-/* DASHBOARD */
-
-#dashboard{
-display:none;
-width:100%;
-max-width:1100px;
-}
-
-.relay-container{
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-margin-top:30px;
+font-weight:bold;
+background:#1e293b;
 }
 
 /* CARD */
 
+.container{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+margin-top:20px;
+}
+
 .card{
-background:white;
-width:230px;
-margin:15px;
+background:#1e293b;
+width:220px;
 padding:25px;
+margin:15px;
 border-radius:12px;
-box-shadow:0 6px 20px rgba(0,0,0,0.15);
-text-align:center;
+box-shadow:0 10px 25px rgba(0,0,0,0.4);
 transition:0.3s;
 }
 
@@ -108,91 +51,47 @@ transition:0.3s;
 transform:translateY(-5px);
 }
 
-.card h3{
+.icon{
+font-size:45px;
 margin-bottom:10px;
-}
-
-.status{
-padding:5px 15px;
-border-radius:20px;
-color:white;
-font-weight:bold;
-font-size:14px;
-display:inline-block;
-margin-bottom:15px;
-}
-
-.on{
-background:#2ecc71;
-}
-
-.off{
-background:#e74c3c;
-}
-
-.card button{
-width:100%;
-padding:10px;
-border:none;
-border-radius:8px;
-color:white;
-font-size:15px;
-cursor:pointer;
 transition:0.3s;
 }
 
-.btn-on{
-background:#2ecc71;
+.on{
+color:#facc15;
+animation: glow 1s infinite alternate;
 }
 
-.btn-off{
-background:#3498db;
+.off{
+color:#64748b;
 }
 
-/* CONTROL BUTTON */
+@keyframes glow{
 
-.controls{
-text-align:center;
-margin-top:20px;
+from{ text-shadow:0 0 5px #facc15;}
+to{ text-shadow:0 0 20px #facc15;}
+
 }
 
-.controls button{
-padding:12px 25px;
+button{
+margin-top:10px;
+padding:10px 20px;
 border:none;
 border-radius:8px;
-font-size:15px;
+background:#3b82f6;
 color:white;
 cursor:pointer;
-margin:8px;
 }
 
-#allOffBtn{
-background:#e74c3c;
-}
+/* GRAPH */
 
-#logoutBtn{
-background:#555;
-}
-
-/* FOOTER */
-
-footer{
-margin-top:auto;
-padding:15px;
-color:white;
-font-size:14px;
-}
-
-@media(max-width:600px){
-
-.card{
+.chart-container{
 width:90%;
-}
-
-#loginForm{
-width:90%;
-}
-
+max-width:800px;
+margin:40px auto;
+background:#1e293b;
+padding:20px;
+border-radius:12px;
 }
 
 </style>
@@ -204,188 +103,184 @@ width:90%;
 SmartHome IoT Dashboard
 </div>
 
-<!-- LOGIN -->
-<div id="loginForm">
-
-<h2>Login</h2>
-
-<input type="email" id="email" placeholder="Email">
-<input type="password" id="password" placeholder="Password">
-
-<button id="loginBtn">Login</button>
-
-</div>
-
-<!-- DASHBOARD -->
-<div id="dashboard">
-
-<div class="relay-container">
+<div class="container">
 
 <div class="card">
-<h3>Relay 1</h3>
-<div id="status1" class="status off">OFF</div>
-<button id="btn1" class="btn-off">Toggle</button>
+
+<div id="icon1" class="icon off">
+<i class="fas fa-lightbulb"></i>
+</div>
+
+<h3>Lampu Ruang</h3>
+
+<button onclick="toggleRelay('relay1')">
+Toggle
+</button>
+
 </div>
 
 <div class="card">
-<h3>Relay 2</h3>
-<div id="status2" class="status off">OFF</div>
-<button id="btn2" class="btn-off">Toggle</button>
+
+<div id="icon2" class="icon off">
+<i class="fas fa-fan"></i>
+</div>
+
+<h3>Kipas</h3>
+
+<button onclick="toggleRelay('relay2')">
+Toggle
+</button>
+
 </div>
 
 <div class="card">
-<h3>Relay 3</h3>
-<div id="status3" class="status off">OFF</div>
-<button id="btn3" class="btn-off">Toggle</button>
+
+<div id="icon3" class="icon off">
+<i class="fas fa-lightbulb"></i>
+</div>
+
+<h3>Lampu Teras</h3>
+
+<button onclick="toggleRelay('relay3')">
+Toggle
+</button>
+
 </div>
 
 <div class="card">
-<h3>Relay 4</h3>
-<div id="status4" class="status off">OFF</div>
-<button id="btn4" class="btn-off">Toggle</button>
+
+<div id="icon4" class="icon off">
+<i class="fas fa-plug"></i>
+</div>
+
+<h3>Stop Kontak</h3>
+
+<button onclick="toggleRelay('relay4')">
+Toggle
+</button>
+
 </div>
 
 </div>
 
-<div class="controls">
+<!-- GRAFIK LISTRIK -->
 
-<button id="allOffBtn">All Device OFF</button>
-<button id="logoutBtn">Logout</button>
+<div class="chart-container">
+
+<h3>Grafik Penggunaan Listrik</h3>
+
+<canvas id="powerChart"></canvas>
 
 </div>
-
-</div>
-
-<footer>
-Created by Nandatronik
-</footer>
 
 <!-- FIREBASE -->
 
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
 
 <script>
 
-// FIREBASE CONFIG
-
 const firebaseConfig = {
-apiKey: "AIzaSyDvrD2L0BBzlqa4RZ3oUXPNwNm3PMtJeGI",
-authDomain: "smart-home-4c042.firebaseapp.com",
-databaseURL: "https://smart-home-4c042-default-rtdb.europe-west1.firebasedatabase.app",
-projectId: "smart-home-4c042",
-storageBucket: "smart-home-4c042.firebasestorage.app",
-messagingSenderId: "1031572631040",
-appId: "1:1031572631040:web:68cdb8ca7621ae373132e5"
+
+apiKey: "API_KEY",
+authDomain: "PROJECT.firebaseapp.com",
+databaseURL: "DATABASE_URL",
+projectId: "PROJECT_ID"
+
 };
 
 firebase.initializeApp(firebaseConfig);
 
-const allowedEmail="admin@gmail.com";
-const allowedPassword="admin123";
+const db = firebase.database();
 
-const loginBtn=document.getElementById("loginBtn");
-const loginForm=document.getElementById("loginForm");
-const dashboard=document.getElementById("dashboard");
+/* RELAY CONTROL */
 
-loginBtn.onclick=()=>{
+function toggleRelay(path){
 
-const email=document.getElementById("email").value;
-const password=document.getElementById("password").value;
-
-if(email===allowedEmail && password===allowedPassword){
-
-firebase.auth().signInWithEmailAndPassword(email,password)
-.then(()=>{
-
-loginForm.style.display="none";
-dashboard.style.display="block";
-startRelay();
-
-})
-.catch(e=>alert(e.message));
-
-}else{
-
-alert("Email atau Password salah");
-
-}
-
-};
-
-function startRelay(){
-
-const db=firebase.database();
-
-const relays=[
-{id:1,path:"relay1"},
-{id:2,path:"relay2"},
-{id:3,path:"relay3"},
-{id:4,path:"relay4"}
-];
-
-relays.forEach(relay=>{
-
-const status=document.getElementById("status"+relay.id);
-const btn=document.getElementById("btn"+relay.id);
-
-const ref=db.ref("/"+relay.path);
-
-ref.on("value",snap=>{
-
-let state=snap.val();
-
-if(state){
-
-status.innerText="ON";
-status.className="status on";
-btn.className="btn-on";
-
-}else{
-
-status.innerText="OFF";
-status.className="status off";
-btn.className="btn-off";
-
-}
-
-});
-
-btn.onclick=()=>{
+const ref = db.ref("/"+path);
 
 ref.get().then(snap=>{
-
 ref.set(!snap.val());
-
 });
 
-};
+}
 
-});
+/* REALTIME STATUS */
 
-document.getElementById("allOffBtn").onclick=()=>{
+const relays = [
+
+{path:"relay1", icon:"icon1"},
+{path:"relay2", icon:"icon2"},
+{path:"relay3", icon:"icon3"},
+{path:"relay4", icon:"icon4"}
+
+];
 
 relays.forEach(r=>{
 
-db.ref("/"+r.path).set(false);
+db.ref("/"+r.path).on("value",snap=>{
 
-});
+let state = snap.val();
 
-};
+const icon = document.getElementById(r.icon);
+
+if(state){
+
+icon.classList.remove("off");
+icon.classList.add("on");
+
+}else{
+
+icon.classList.remove("on");
+icon.classList.add("off");
 
 }
 
-document.getElementById("logoutBtn").onclick=()=>{
-
-firebase.auth().signOut().then(()=>{
-
-dashboard.style.display="none";
-loginForm.style.display="block";
+});
 
 });
 
-};
+/* GRAFIK LISTRIK */
+
+const ctx = document.getElementById("powerChart");
+
+const powerChart = new Chart(ctx,{
+
+type:"line",
+
+data:{
+
+labels:["00","04","08","12","16","20"],
+
+datasets:[{
+
+label:"Watt",
+
+data:[120,150,90,200,170,140],
+
+borderWidth:3,
+fill:false
+
+}]
+
+},
+
+options:{
+
+plugins:{
+legend:{labels:{color:"white"}}
+},
+
+scales:{
+
+x:{ticks:{color:"white"}},
+y:{ticks:{color:"white"}}
+
+}
+
+}
+
+});
 
 </script>
 

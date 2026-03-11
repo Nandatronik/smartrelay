@@ -1,299 +1,393 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8" />
-  <title>SmartHome Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background-color: #f9f9f9;
-      margin: 0;
-      padding: 0 10px 40px;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      justify-content: space-between;
-    }
-    h1 {
-      margin-top: 30px;
-      font-size: 1.8rem;
-    }
-    .relay-card {
-      display: inline-block;
-      background-color: white;
-      padding: 20px;
-      margin: 15px;
-      border-radius: 15px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      width: 220px;
-      vertical-align: top;
-    }
-    .relay-card h2 {
-      margin-bottom: 10px;
-      font-size: 1.3rem;
-    }
-    .relay-card p {
-      margin-bottom: 10px;
-      font-size: 1rem;
-    }
-    .relay-card button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 10px;
-      color: white;
-      background-color: blue;
-      cursor: pointer;
-      font-size: 16px;
-	  width: 90%;
-      transition: opacity 0.3s ease;
-    }
-    .relay-card button:hover {
-      opacity: 0.8;
-    }
-    #allOffBtn, #logoutBtn {
-      max-width: 300px;
-      width: 90%;
-      padding: 12px 25px;
-      font-size: 16px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      margin: 15px auto;
-      display: block;
-      color: white;
-      transition: opacity 0.3s ease;
-    }
-    #allOffBtn {
-      background-color: #d32f2f;
-    }
-    #allOffBtn:hover {
-      opacity: 0.8;
-    }
-    #logoutBtn {
-      background-color: #555;
-    }
-    #logoutBtn:hover {
-      opacity: 0.8;
-    }
+<html lang="en">
 
-    /* Responsive layout */
-    #dashboard {
-      display: none;
-    }
-    #loginForm {
-      max-width: 400px;
-      margin: 80px auto 20px;
-      background: white;
-      padding: 30px 20px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    #loginForm input {
-      width: 100%;
-      padding: 12px 15px;
-      margin: 10px 0 20px;
-      font-size: 1rem;
-      border: 1.5px solid #ccc;
-      border-radius: 10px;
-      box-sizing: border-box;
-      outline-offset: 2px;
-      transition: border-color 0.3s ease;
-    }
-    #loginForm input:focus {
-      border-color: #1e88e5;
-    }
-    #loginForm button {
-      width: 100%;
-      background-color: #1e88e5;
-      color: white;
-      padding: 12px;
-      font-size: 18px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    #loginForm button:hover {
-      background-color: #1565c0;
-    }
-    #dashboard .relay-container {
-      max-width: 960px;
-      margin: 20px auto 0;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    /* Smaller devices */
-    @media (max-width: 700px) {
-      .relay-card {
-        width: 90%;
-        margin: 10px auto;
-        display: block;
-      }
-      body {
-        padding: 0 10px 60px;
-      }
-    }
-    footer {
-      font-size: 0.9rem;
-      color: #666;
-      padding: 10px 0;
-      margin-top: 40px;
-    }
-  </style>
+<head>
+<meta charset="UTF-8">
+<title>SmartHome IoT Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+*{
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+margin:0;
+background:linear-gradient(120deg,#1e3c72,#2a5298);
+color:#333;
+min-height:100vh;
+display:flex;
+flex-direction:column;
+align-items:center;
+}
+
+/* HEADER */
+
+.header{
+width:100%;
+padding:20px;
+text-align:center;
+color:white;
+font-size:26px;
+font-weight:600;
+letter-spacing:1px;
+}
+
+/* LOGIN */
+
+#loginForm{
+background:white;
+padding:35px;
+border-radius:12px;
+width:360px;
+box-shadow:0 8px 25px rgba(0,0,0,0.2);
+margin-top:40px;
+}
+
+#loginForm h2{
+text-align:center;
+margin-bottom:25px;
+}
+
+#loginForm input{
+width:100%;
+padding:12px;
+margin-bottom:15px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:15px;
+}
+
+#loginForm button{
+width:100%;
+padding:12px;
+background:#2a5298;
+border:none;
+border-radius:8px;
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:0.3s;
+}
+
+#loginForm button:hover{
+background:#1e3c72;
+}
+
+/* DASHBOARD */
+
+#dashboard{
+display:none;
+width:100%;
+max-width:1100px;
+}
+
+.relay-container{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+margin-top:30px;
+}
+
+/* CARD */
+
+.card{
+background:white;
+width:230px;
+margin:15px;
+padding:25px;
+border-radius:12px;
+box-shadow:0 6px 20px rgba(0,0,0,0.15);
+text-align:center;
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-5px);
+}
+
+.card h3{
+margin-bottom:10px;
+}
+
+.status{
+padding:5px 15px;
+border-radius:20px;
+color:white;
+font-weight:bold;
+font-size:14px;
+display:inline-block;
+margin-bottom:15px;
+}
+
+.on{
+background:#2ecc71;
+}
+
+.off{
+background:#e74c3c;
+}
+
+.card button{
+width:100%;
+padding:10px;
+border:none;
+border-radius:8px;
+color:white;
+font-size:15px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.btn-on{
+background:#2ecc71;
+}
+
+.btn-off{
+background:#3498db;
+}
+
+/* CONTROL BUTTON */
+
+.controls{
+text-align:center;
+margin-top:20px;
+}
+
+.controls button{
+padding:12px 25px;
+border:none;
+border-radius:8px;
+font-size:15px;
+color:white;
+cursor:pointer;
+margin:8px;
+}
+
+#allOffBtn{
+background:#e74c3c;
+}
+
+#logoutBtn{
+background:#555;
+}
+
+/* FOOTER */
+
+footer{
+margin-top:auto;
+padding:15px;
+color:white;
+font-size:14px;
+}
+
+@media(max-width:600px){
+
+.card{
+width:90%;
+}
+
+#loginForm{
+width:90%;
+}
+
+}
+
+</style>
 </head>
+
 <body>
 
-  <h1>SmartHome Dashboard</h1>
+<div class="header">
+SmartHome IoT Dashboard
+</div>
 
-  <!-- Login form -->
-  <div id="loginForm">
-    <input type="email" id="email" placeholder="Enter Email" required />
-    <input type="password" id="password" placeholder="Enter Password" required />
-    <button id="loginBtn">Login</button>
-  </div>
+<!-- LOGIN -->
+<div id="loginForm">
 
-  <!-- Dashboard -->
-  <div id="dashboard">
-    <div class="relay-container">
-      <div class="relay-card">
-        <h2>Relay 1</h2>
-        <p>Status: <span id="status1">Loading...</span></p>
-        <button id="btn1">Toggle</button>
-      </div>
+<h2>Login</h2>
 
-      <div class="relay-card">
-        <h2>Relay 2</h2>
-        <p>Status: <span id="status2">Loading...</span></p>
-        <button id="btn2">Toggle</button>
-      </div>
+<input type="email" id="email" placeholder="Email">
+<input type="password" id="password" placeholder="Password">
 
-      <div class="relay-card">
-        <h2>Relay 3</h2>
-        <p>Status: <span id="status3">Loading...</span></p>
-        <button id="btn3">Toggle</button>
-      </div>
+<button id="loginBtn">Login</button>
 
-      <div class="relay-card">
-        <h2>Relay 4</h2>
-        <p>Status: <span id="status4">Loading...</span></p>
-        <button id="btn4">Toggle</button>
-      </div>
-    </div>
+</div>
 
-    <button id="allOffBtn">All OFF</button>
-    <button id="logoutBtn">Logout</button>
-  </div>
+<!-- DASHBOARD -->
+<div id="dashboard">
 
-  <footer>
-    Created by Nandatronik
-  </footer>
+<div class="relay-container">
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+<div class="card">
+<h3>Relay 1</h3>
+<div id="status1" class="status off">OFF</div>
+<button id="btn1" class="btn-off">Toggle</button>
+</div>
 
-  <script>
-    // Firebase config
-   const firebaseConfig = {
-  apiKey: "AIzaSyDvrD2L0BBzlqa4RZ3oUXPNwNm3PMtJeGI",
-  authDomain: "smart-home-4c042.firebaseapp.com",
-  databaseURL: "https://smart-home-4c042-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "smart-home-4c042",
-  storageBucket: "smart-home-4c042.firebasestorage.app",
-  messagingSenderId: "1031572631040",
-  appId: "1:1031572631040:web:68cdb8ca7621ae373132e5"
+<div class="card">
+<h3>Relay 2</h3>
+<div id="status2" class="status off">OFF</div>
+<button id="btn2" class="btn-off">Toggle</button>
+</div>
+
+<div class="card">
+<h3>Relay 3</h3>
+<div id="status3" class="status off">OFF</div>
+<button id="btn3" class="btn-off">Toggle</button>
+</div>
+
+<div class="card">
+<h3>Relay 4</h3>
+<div id="status4" class="status off">OFF</div>
+<button id="btn4" class="btn-off">Toggle</button>
+</div>
+
+</div>
+
+<div class="controls">
+
+<button id="allOffBtn">All Device OFF</button>
+<button id="logoutBtn">Logout</button>
+
+</div>
+
+</div>
+
+<footer>
+Created by Nandatronik
+</footer>
+
+<!-- FIREBASE -->
+
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+
+<script>
+
+// FIREBASE CONFIG
+
+const firebaseConfig = {
+apiKey: "AIzaSyDvrD2L0BBzlqa4RZ3oUXPNwNm3PMtJeGI",
+authDomain: "smart-home-4c042.firebaseapp.com",
+databaseURL: "https://smart-home-4c042-default-rtdb.europe-west1.firebasedatabase.app",
+projectId: "smart-home-4c042",
+storageBucket: "smart-home-4c042.firebasestorage.app",
+messagingSenderId: "1031572631040",
+appId: "1:1031572631040:web:68cdb8ca7621ae373132e5"
 };
 
-    firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 
-    // Predefined login credentials (can be replaced with your logic)
-    const allowedEmail = "admin@gmail.com";
-    const allowedPassword = "admin123";
+const allowedEmail="admin@gmail.com";
+const allowedPassword="admin123";
 
-    const loginForm = document.getElementById("loginForm");
-    const dashboard = document.getElementById("dashboard");
-    const loginBtn = document.getElementById("loginBtn");
+const loginBtn=document.getElementById("loginBtn");
+const loginForm=document.getElementById("loginForm");
+const dashboard=document.getElementById("dashboard");
 
-    loginBtn.addEventListener("click", () => {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
+loginBtn.onclick=()=>{
 
-      if (!email || !password) {
-        alert("Please enter email and password.");
-        return;
-      }
+const email=document.getElementById("email").value;
+const password=document.getElementById("password").value;
 
-      // Check hardcoded credentials first
-      if(email === allowedEmail && password === allowedPassword){
-        // Sign in with Firebase
-        firebase.auth().signInWithEmailAndPassword(email, password)
-          .then(userCredential => {
-            console.log("Signed in as", userCredential.user.email);
-            loginForm.style.display = "none";
-            dashboard.style.display = "block";
-            startRelayControl();
-          })
-          .catch(error => {
-            alert("Firebase login failed: " + error.message);
-          });
-      } else {
-        alert("Invalid email or password.");
-      }
-    });
+if(email===allowedEmail && password===allowedPassword){
 
-    function startRelayControl() {
-      const db = firebase.database();
+firebase.auth().signInWithEmailAndPassword(email,password)
+.then(()=>{
 
-      const relays = [
-        { id: 1, path: "relay1" },
-        { id: 2, path: "relay2" },
-        { id: 3, path: "relay3" },
-        { id: 4, path: "relay4" },
-      ];
+loginForm.style.display="none";
+dashboard.style.display="block";
+startRelay();
 
-      relays.forEach(relay => {
-        const statusText = document.getElementById(`status${relay.id}`);
-        const toggleButton = document.getElementById(`btn${relay.id}`);
-        const relayRef = db.ref("/" + relay.path);
+})
+.catch(e=>alert(e.message));
 
-        relayRef.on("value", (snapshot) => {
-          const state = snapshot.val();
-          statusText.innerText = state ? "ON" : "OFF";
-          toggleButton.style.backgroundColor = state ? "green" : "blue";
-        });
+}else{
 
-        toggleButton.onclick = () => {
-          relayRef.get().then(snap => {
-            relayRef.set(!snap.val());
-          });
-        };
-      });
+alert("Email atau Password salah");
 
-      document.getElementById("allOffBtn").onclick = () => {
-        relays.forEach(relay => {
-          db.ref("/" + relay.path).set(false);
-        });
-      };
-    }
+}
 
-    document.getElementById("logoutBtn").onclick = () => {
-      firebase.auth().signOut()
-        .then(() => {
-          dashboard.style.display = "none";
-          loginForm.style.display = "block";
-          document.getElementById("email").value = "";
-          document.getElementById("password").value = "";
-        })
-        .catch(error => {
-          alert("Logout failed: " + error.message);
-        });
-    };
-  </script>
+};
+
+function startRelay(){
+
+const db=firebase.database();
+
+const relays=[
+{id:1,path:"relay1"},
+{id:2,path:"relay2"},
+{id:3,path:"relay3"},
+{id:4,path:"relay4"}
+];
+
+relays.forEach(relay=>{
+
+const status=document.getElementById("status"+relay.id);
+const btn=document.getElementById("btn"+relay.id);
+
+const ref=db.ref("/"+relay.path);
+
+ref.on("value",snap=>{
+
+let state=snap.val();
+
+if(state){
+
+status.innerText="ON";
+status.className="status on";
+btn.className="btn-on";
+
+}else{
+
+status.innerText="OFF";
+status.className="status off";
+btn.className="btn-off";
+
+}
+
+});
+
+btn.onclick=()=>{
+
+ref.get().then(snap=>{
+
+ref.set(!snap.val());
+
+});
+
+};
+
+});
+
+document.getElementById("allOffBtn").onclick=()=>{
+
+relays.forEach(r=>{
+
+db.ref("/"+r.path).set(false);
+
+});
+
+};
+
+}
+
+document.getElementById("logoutBtn").onclick=()=>{
+
+firebase.auth().signOut().then(()=>{
+
+dashboard.style.display="none";
+loginForm.style.display="block";
+
+});
+
+};
+
+</script>
+
 </body>
 </html>
-
-

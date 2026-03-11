@@ -1,12 +1,12 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SmartHome IoT Dashboard</title>
+<title>Smart Home IoT Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
@@ -16,34 +16,35 @@ font-family:Segoe UI;
 margin:0;
 background:#0f172a;
 color:white;
-text-align:center;
 }
-
-/* HEADER */
 
 .header{
+display:flex;
+justify-content:space-between;
+align-items:center;
 padding:20px;
-font-size:26px;
-font-weight:bold;
 background:#1e293b;
+font-size:22px;
+font-weight:bold;
 }
 
-/* CARD */
+.status{
+color:#22c55e;
+}
 
 .container{
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-margin-top:20px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+padding:30px;
 }
 
 .card{
 background:#1e293b;
-width:220px;
 padding:25px;
-margin:15px;
-border-radius:12px;
-box-shadow:0 10px 25px rgba(0,0,0,0.4);
+border-radius:15px;
+text-align:center;
+box-shadow:0 10px 30px rgba(0,0,0,0.4);
 transition:0.3s;
 }
 
@@ -54,23 +55,15 @@ transform:translateY(-5px);
 .icon{
 font-size:45px;
 margin-bottom:10px;
-transition:0.3s;
 }
 
 .on{
 color:#facc15;
-animation: glow 1s infinite alternate;
+text-shadow:0 0 20px #facc15;
 }
 
 .off{
 color:#64748b;
-}
-
-@keyframes glow{
-
-from{ text-shadow:0 0 5px #facc15;}
-to{ text-shadow:0 0 20px #facc15;}
-
 }
 
 button{
@@ -83,15 +76,23 @@ color:white;
 cursor:pointer;
 }
 
-/* GRAPH */
-
-.chart-container{
-width:90%;
-max-width:800px;
-margin:40px auto;
+.chart-box{
 background:#1e293b;
-padding:20px;
-border-radius:12px;
+margin:20px;
+padding:25px;
+border-radius:15px;
+}
+
+.monitor{
+display:flex;
+justify-content:space-around;
+margin-top:20px;
+}
+
+.monitor div{
+background:#0f172a;
+padding:15px 25px;
+border-radius:10px;
 }
 
 </style>
@@ -100,80 +101,72 @@ border-radius:12px;
 <body>
 
 <div class="header">
-SmartHome IoT Dashboard
+<div>🏠 Smart Home Dashboard</div>
+<div class="status">ESP32 ONLINE</div>
 </div>
 
 <div class="container">
 
 <div class="card">
-
 <div id="icon1" class="icon off">
 <i class="fas fa-lightbulb"></i>
 </div>
-
 <h3>Lampu Ruang</h3>
-
-<button onclick="toggleRelay('relay1')">
-Toggle
-</button>
-
+<button onclick="toggleRelay('relay1')">Toggle</button>
 </div>
 
 <div class="card">
-
 <div id="icon2" class="icon off">
 <i class="fas fa-fan"></i>
 </div>
-
 <h3>Kipas</h3>
-
-<button onclick="toggleRelay('relay2')">
-Toggle
-</button>
-
+<button onclick="toggleRelay('relay2')">Toggle</button>
 </div>
 
 <div class="card">
-
 <div id="icon3" class="icon off">
 <i class="fas fa-lightbulb"></i>
 </div>
-
 <h3>Lampu Teras</h3>
-
-<button onclick="toggleRelay('relay3')">
-Toggle
-</button>
-
+<button onclick="toggleRelay('relay3')">Toggle</button>
 </div>
 
 <div class="card">
-
 <div id="icon4" class="icon off">
 <i class="fas fa-plug"></i>
 </div>
-
 <h3>Stop Kontak</h3>
-
-<button onclick="toggleRelay('relay4')">
-Toggle
-</button>
-
+<button onclick="toggleRelay('relay4')">Toggle</button>
 </div>
 
 </div>
 
-<!-- GRAFIK LISTRIK -->
+<div class="chart-box">
 
-<div class="chart-container">
-
-<h3>Grafik Penggunaan Listrik</h3>
+<h3>Energy Consumption</h3>
 
 <canvas id="powerChart"></canvas>
 
+<div class="monitor">
+
+<div>
+⚡ Voltage  
+<h2 id="volt">220 V</h2>
 </div>
 
-<!-- FIREBASE -->
+<div>
+💧 Current  
+<h2 id="amp">0.8 A</h2>
+</div>
+
+<div>
+🔋 Power  
+<h2 id="watt">180 W</h2>
+</div>
+
+</div>
+
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
@@ -181,7 +174,6 @@ Toggle
 <script>
 
 const firebaseConfig = {
-
   apiKey: "AIzaSyDvrD2L0BBzlqa4RZ3oUXPNwNm3PMtJeGI",
   authDomain: "smart-home-4c042.firebaseapp.com",
   databaseURL: "https://smart-home-4c042-default-rtdb.europe-west1.firebasedatabase.app",
@@ -189,41 +181,40 @@ const firebaseConfig = {
   storageBucket: "smart-home-4c042.firebasestorage.app",
   messagingSenderId: "1031572631040",
   appId: "1:1031572631040:web:68cdb8ca7621ae373132e5"
-
 };
 
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
 
-/* RELAY CONTROL */
-
 function toggleRelay(path){
 
-const ref = db.ref("/"+path);
+const ref = db.ref(path);
 
-ref.get().then(snap=>{
-ref.set(!snap.val());
+ref.once("value").then(function(snapshot){
+
+let val = snapshot.val();
+
+ref.set(!val);
+
 });
 
 }
 
-/* REALTIME STATUS */
-
 const relays = [
 
-{path:"relay1", icon:"icon1"},
-{path:"relay2", icon:"icon2"},
-{path:"relay3", icon:"icon3"},
-{path:"relay4", icon:"icon4"}
+{path:"relay1",icon:"icon1"},
+{path:"relay2",icon:"icon2"},
+{path:"relay3",icon:"icon3"},
+{path:"relay4",icon:"icon4"}
 
 ];
 
 relays.forEach(r=>{
 
-db.ref("/"+r.path).on("value",snap=>{
+db.ref(r.path).on("value",function(snapshot){
 
-let state = snap.val();
+let state = snapshot.val();
 
 const icon = document.getElementById(r.icon);
 
@@ -243,50 +234,45 @@ icon.classList.add("off");
 
 });
 
-/* GRAFIK LISTRIK */
-
 const ctx = document.getElementById("powerChart");
 
-const powerChart = new Chart(ctx,{
+const chart = new Chart(ctx,{
 
 type:"line",
 
 data:{
-
 labels:["00","04","08","12","16","20"],
-
 datasets:[{
-
-label:"Watt",
-
+label:"Power (W)",
 data:[120,150,90,200,170,140],
-
-borderWidth:3,
-fill:false
-
+borderWidth:3
 }]
-
 },
 
 options:{
-
-plugins:{
-legend:{labels:{color:"white"}}
-},
-
+plugins:{legend:{labels:{color:"white"}}},
 scales:{
-
 x:{ticks:{color:"white"}},
 y:{ticks:{color:"white"}}
-
+}
 }
 
-}
+});
 
+db.ref("sensor/voltage").on("value",snap=>{
+document.getElementById("volt").innerHTML=snap.val()+" V";
+});
+
+db.ref("sensor/current").on("value",snap=>{
+document.getElementById("amp").innerHTML=snap.val()+" A";
+});
+
+db.ref("sensor/power").on("value",snap=>{
+document.getElementById("watt").innerHTML=snap.val()+" W";
 });
 
 </script>
 
 </body>
 </html>
-
+```

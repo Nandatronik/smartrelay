@@ -20,13 +20,6 @@ align-items:center;
 height:100vh;
 }
 
-.container{
-display:flex;
-gap:30px;
-flex-wrap:wrap;
-justify-content:center;
-}
-
 .card{
 background:#1e293b;
 padding:40px;
@@ -90,9 +83,6 @@ color:#94a3b8;
 
 <body>
 
-<div class="container">
-
-<!-- LAMPU LUAR -->
 <div class="card">
 
 <div class="title">
@@ -103,43 +93,16 @@ color:#94a3b8;
 <i class="fas fa-lightbulb"></i>
 </div>
 
-<div id="status1" class="status">
+<div id="statusText" class="status">
 OFF
 </div>
 
-<button onclick="toggleRelay('relay1')">
+<button onclick="toggleRelay()">
 Toggle Lampu
 </button>
 
 <div class="footer">
-Smart Home IoT
-</div>
-
-</div>
-
-<!-- LAMPU BELAKANG -->
-<div class="card">
-
-<div class="title">
-🌙 Lampu Belakang
-</div>
-
-<div id="icon2" class="icon off">
-<i class="fas fa-lightbulb"></i>
-</div>
-
-<div id="status2" class="status">
-OFF
-</div>
-
-<button onclick="toggleRelay('relay2')">
-Toggle Lampu
-</button>
-
-<div class="footer">
-Smart Home IoT
-</div>
-
+Smart Home IoT by Nandatronik
 </div>
 
 </div>
@@ -171,9 +134,9 @@ firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
 
-function toggleRelay(path){
+function toggleRelay(){
 
-const ref = db.ref(path);
+const ref = db.ref("relay1");
 
 ref.once("value").then(function(snapshot){
 
@@ -185,39 +148,12 @@ ref.set(!val);
 
 }
 
-// RELAY 1
 db.ref("relay1").on("value",function(snapshot){
 
 let state = snapshot.val();
 
 const icon = document.getElementById("icon1");
-const status = document.getElementById("status1");
-
-if(state){
-
-icon.classList.remove("off");
-icon.classList.add("on");
-
-status.innerHTML = "ON";
-
-}else{
-
-icon.classList.remove("on");
-icon.classList.add("off");
-
-status.innerHTML = "OFF";
-
-}
-
-});
-
-// RELAY 2
-db.ref("relay2").on("value",function(snapshot){
-
-let state = snapshot.val();
-
-const icon = document.getElementById("icon2");
-const status = document.getElementById("status2");
+const status = document.getElementById("statusText");
 
 if(state){
 

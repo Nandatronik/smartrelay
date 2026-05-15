@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 
@@ -16,83 +14,68 @@ font-family:Segoe UI;
 margin:0;
 background:#0f172a;
 color:white;
-}
-
-.header{
 display:flex;
-justify-content:space-between;
+justify-content:center;
 align-items:center;
-padding:20px;
-background:#1e293b;
-font-size:22px;
-font-weight:bold;
-}
-
-.status{
-color:#22c55e;
-}
-
-.container{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:20px;
-padding:30px;
+height:100vh;
 }
 
 .card{
 background:#1e293b;
-padding:25px;
-border-radius:15px;
+padding:40px;
+border-radius:20px;
 text-align:center;
-box-shadow:0 10px 30px rgba(0,0,0,0.4);
-transition:0.3s;
+width:320px;
+box-shadow:0 10px 30px rgba(0,0,0,0.5);
 }
 
-.card:hover{
-transform:translateY(-5px);
+.title{
+font-size:28px;
+font-weight:bold;
+margin-bottom:20px;
 }
 
 .icon{
-font-size:45px;
-margin-bottom:10px;
+font-size:90px;
+margin-bottom:20px;
+transition:0.3s;
 }
 
 .on{
 color:#facc15;
-text-shadow:0 0 20px #facc15;
+text-shadow:0 0 30px #facc15;
 }
 
 .off{
 color:#64748b;
 }
 
-button{
+.status{
 margin-top:10px;
-padding:10px 20px;
+font-size:20px;
+}
+
+button{
+margin-top:25px;
+padding:14px 30px;
 border:none;
-border-radius:8px;
+border-radius:12px;
 background:#3b82f6;
 color:white;
+font-size:18px;
 cursor:pointer;
+transition:0.3s;
 }
 
-.chart-box{
-background:#1e293b;
-margin:20px;
-padding:25px;
-border-radius:15px;
+button:hover{
+background:#2563eb;
+transform:scale(1.05);
 }
 
-.monitor{
-display:flex;
-justify-content:space-around;
+.footer{
 margin-top:20px;
-}
-
-.monitor div{
-background:#0f172a;
-padding:15px 25px;
-border-radius:10px;
+font-size:14px;
+color:#94a3b8;
 }
 
 </style>
@@ -100,70 +83,26 @@ border-radius:10px;
 
 <body>
 
-<div class="header">
-<div>🏠 Smart Home Dashboard</div>
-<div class="status">by Nandatronik</div>
+<div class="card">
+
+<div class="title">
+🏠 Lampu Luar
 </div>
 
-<div class="container">
-
-<div class="card">
 <div id="icon1" class="icon off">
 <i class="fas fa-lightbulb"></i>
 </div>
-<h3>Lampu Ruang</h3>
-<button onclick="toggleRelay('relay1')">Toggle</button>
+
+<div id="statusText" class="status">
+OFF
 </div>
 
-<div class="card">
-<div id="icon2" class="icon off">
-<i class="fas fa-fan"></i>
-</div>
-<h3>Kipas</h3>
-<button onclick="toggleRelay('relay2')">Toggle</button>
-</div>
+<button onclick="toggleRelay()">
+Toggle Lampu
+</button>
 
-<div class="card">
-<div id="icon3" class="icon off">
-<i class="fas fa-lightbulb"></i>
-</div>
-<h3>Lampu Teras</h3>
-<button onclick="toggleRelay('relay3')">Toggle</button>
-</div>
-
-<div class="card">
-<div id="icon4" class="icon off">
-<i class="fas fa-plug"></i>
-</div>
-<h3>Stop Kontak</h3>
-<button onclick="toggleRelay('relay4')">Toggle</button>
-</div>
-
-</div>
-
-<div class="chart-box">
-
-<h3>Energy Consumption</h3>
-
-<canvas id="powerChart"></canvas>
-
-<div class="monitor">
-
-<div>
-⚡ Voltage  
-<h2 id="volt">220 V</h2>
-</div>
-
-<div>
-💧 Current  
-<h2 id="amp">0.8 A</h2>
-</div>
-
-<div>
-🔋 Power  
-<h2 id="watt">180 W</h2>
-</div>
-
+<div class="footer">
+Smart Home IoT by Nandatronik
 </div>
 
 </div>
@@ -174,22 +113,30 @@ border-radius:10px;
 <script>
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDvrD2L0BBzlqa4RZ3oUXPNwNm3PMtJeGI",
-  authDomain: "smart-home-4c042.firebaseapp.com",
-  databaseURL: "https://smart-home-4c042-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "smart-home-4c042",
-  storageBucket: "smart-home-4c042.firebasestorage.app",
-  messagingSenderId: "1031572631040",
-  appId: "1:1031572631040:web:68cdb8ca7621ae373132e5"
+
+apiKey: "AIzaSyDvrD2L0BBzlqa4RZ3oUXPNwNm3PMtJeGI",
+
+authDomain: "smart-home-4c042.firebaseapp.com",
+
+databaseURL: "https://smart-home-4c042-default-rtdb.europe-west1.firebasedatabase.app",
+
+projectId: "smart-home-4c042",
+
+storageBucket: "smart-home-4c042.firebasestorage.app",
+
+messagingSenderId: "1031572631040",
+
+appId: "1:1031572631040:web:68cdb8ca7621ae373132e5"
+
 };
 
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
 
-function toggleRelay(path){
+function toggleRelay(){
 
-const ref = db.ref(path);
+const ref = db.ref("relay1");
 
 ref.once("value").then(function(snapshot){
 
@@ -201,79 +148,32 @@ ref.set(!val);
 
 }
 
-const relays = [
-
-{path:"relay1",icon:"icon1"},
-{path:"relay2",icon:"icon2"},
-{path:"relay3",icon:"icon3"},
-{path:"relay4",icon:"icon4"}
-
-];
-
-relays.forEach(r=>{
-
-db.ref(r.path).on("value",function(snapshot){
+db.ref("relay1").on("value",function(snapshot){
 
 let state = snapshot.val();
 
-const icon = document.getElementById(r.icon);
+const icon = document.getElementById("icon1");
+const status = document.getElementById("statusText");
 
 if(state){
 
 icon.classList.remove("off");
 icon.classList.add("on");
 
+status.innerHTML = "ON";
+
 }else{
 
 icon.classList.remove("on");
 icon.classList.add("off");
 
+status.innerHTML = "OFF";
+
 }
 
-});
-
-});
-
-const ctx = document.getElementById("powerChart");
-
-const chart = new Chart(ctx,{
-
-type:"line",
-
-data:{
-labels:["00","04","08","12","16","20"],
-datasets:[{
-label:"Power (W)",
-data:[120,150,90,200,170,140],
-borderWidth:3
-}]
-},
-
-options:{
-plugins:{legend:{labels:{color:"white"}}},
-scales:{
-x:{ticks:{color:"white"}},
-y:{ticks:{color:"white"}}
-}
-}
-
-});
-
-db.ref("sensor/voltage").on("value",snap=>{
-document.getElementById("volt").innerHTML=snap.val()+" V";
-});
-
-db.ref("sensor/current").on("value",snap=>{
-document.getElementById("amp").innerHTML=snap.val()+" A";
-});
-
-db.ref("sensor/power").on("value",snap=>{
-document.getElementById("watt").innerHTML=snap.val()+" W";
 });
 
 </script>
 
 </body>
 </html>
-```
-
